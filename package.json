@@ -1,11 +1,15 @@
 {
-  "name": "nodejs-test-without-library",
+  "name": "onderwijs-test-without-library",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "node test.js ./*-test.js"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Tauseef",
+  "license": "ISC",
+  "dependencies": {
+    "moment-range": "^4.0.2",
+    "moment": "^2.29.0"
+  }
 }
