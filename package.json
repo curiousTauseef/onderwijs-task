@@ -4,13 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js ./*-test.js"
+    "test": "node ./node_modules/mocha/bin/mocha"
   },
   "author": "Tauseef",
   "license": "ISC",
   "dependencies": {
-    "moment-range": "^4.0.2",
     "chai": "^4.2.0",
-    "moment": "^2.29.1"
+    "i": "^0.3.6",
+    "moment": "^2.29.1",
+    "moment-range": "^4.0.2"
+  },
+  "devDependencies": {
+    "mocha": "^8.2.1"
   }
 }
