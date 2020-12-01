@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "moment-range": "^4.0.2",
-    "moment": "^2.29.0"
+    "chai": "^4.2.0",
+    "moment": "^2.29.1"
   }
 }
