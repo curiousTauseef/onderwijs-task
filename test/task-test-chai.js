@@ -6,11 +6,11 @@ var assert = require('chai').assert;
 
 
 it('CREATE case 1 ', () => {
-  expect(generateRelsForAPI([{startDate: new Date("2020-3-17"), endDate : new Date("2020-6-20")}],[])).to.deep.equal( [{
+  expect(generateRelsForAPI([{startDate: new Date("2020-3-17").toISOString().substring(0, 10), endDate : new Date("2020-6-20").toISOString().substring(0, 10)}],[])).to.eql( [{
     operation: 'CREATE',
     body: {
-      startDate: "2020-03-16T23:00:00.000Z",
-      endDate: "2020-06-19T22:00:00.000Z"
+      startDate:'2020-03-16',
+      endDate: '2020-06-19'
     }
   }]);
 

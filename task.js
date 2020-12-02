@@ -18,6 +18,14 @@ var r1 = {
 var ranges = [r1, r3, r2];
 console.log(ranges);
 
+let prices = {
+    banana: new Date("2001-1-16").toISOString().substring(0, 10),
+    orange: 2,
+    meat: 4,
+  };
+
+  console.log(prices.banana);
+
 
 //helper functions
 //For a pair of date ranges
@@ -90,7 +98,7 @@ if (date2.getTime() === date1.getTime()) {
 
 
     let desiredRels = [];
-    desiredRels.push( {startDate: new Date("2020-3-17"), endDate : new Date("2020-6-20")} );
+    desiredRels.push( {startDate: new Date("2020-3-17").toISOString().substring(0, 10), endDate : new Date("2020-6-20").toISOString().substring(0, 10)} );
 
     console.log("desiredRels");
     console.log(desiredRels);
@@ -114,6 +122,7 @@ if (date2.getTime() === date1.getTime()) {
         //CASE1:when no items in existingRels and at least one item in desiredRels
         //CASE2:when non zero items in existingRels and at least one item in desiredRels
         if ( existingRels.length==0 && desiredRels.length!=0){
+            //All the ranges in desiredREls must be created
             for (var i = 0; i < desiredRels.length; i++){
 
                 //console.log(desiredRels[0].startDate);
@@ -122,7 +131,13 @@ if (date2.getTime() === date1.getTime()) {
                 // check for overlap, here
                     console.log("case1:CREATE_count");
                     var idx = i;
+                    //Check/Testing: if we can get date objects and populate them instead. No more need d1 or d2
+                    //let d1 = desiredRels[i].startDate;
+                    //let d2 = desiredRels[i].endDate;
+                    //console.log(d1);
+                    //console.log(d2);
                     var tmpObj = desiredRels[i];
+                    //var tmpObj = {startDate: desiredRels[i].startDate.toISOString().substring(0, 10),endDate: desiredRels[i].endDate.toISOString().substring(0, 10)};
                     CREATE_count=CREATE_count+1;
                     resultArray.push( {operation: "CREATE", body:tmpObj} );
   
@@ -173,7 +188,10 @@ if (date2.getTime() === date1.getTime()) {
         
     }
 
-    //generateRelsForAPI(desiredRels,existingRels);
+    let retResult = generateRelsForAPI(desiredRels,existingRels);
+
+    console.log("Final returned result object");
+    console.log(retResult);
 
     
     
