@@ -70,7 +70,7 @@ console.log(
   */
 
 let desiredRels_ovrlpIDs =         desiredRels.map(el => ({ startDate:el.startDate, endDate:el.endDate, ovrID:0}))
-//console.log(desiredRels_ovrlpIDs)
+console.log(desiredRels_ovrlpIDs)
 
 
 function generateRelsForAPI(desiredRels,existingRels){
@@ -106,9 +106,17 @@ function generateRelsForAPI(desiredRels,existingRels){
 
     //Now mark for UPDATES and overlapping DELETEs
     desiredRels_ovrlpIDs.forEach(e1 =>{ existingRels.forEach(e2 => 
-        {    
+        {//We have marked ovrID 0 for each element in desiredREls. Lets check if element of desiredREls has overlap
+            //If it has overlap then check if overID. if overID is 0 then first time overlap occurs- chng ovrID and mark for overlap
+            //If despite overlap, ovrID is non zero then it means not first time overlap -> element of existingRel must be deleted
+            console.log("Mark for updates: Run thru item des e1");
+            console.log(e1);
+            console.log("with existing e1");
+            console.log(e2);
+
               if(     moment.range(e1.startDate,e1.endDate).overlaps(moment.range(e2.startDate,e2.endDate)) == true) {
                   if(e1.ovrID == 0){//mark for update for el in Desired
+                       console.log("First time overlap of des e1")
                        resultArray.push( {operation: "UPDATE", body:{key:e2.key, startDate:e1.startDate, endDate:e1.endDate}} );
                        e1.ovrID = e2.key;
                        updateExistingLst.push(e2.key);
@@ -121,6 +129,9 @@ function generateRelsForAPI(desiredRels,existingRels){
         });
         //At this level, we have iterated over all items of desiredRels
         //end of running thru e1 curly brace block followed by ) and finally;  
+        console.log("<<<<<<<<<<<<<<<<End of inner loop run : Lets check whats e1");
+        console.log(e1);
+
     }
     );
 
