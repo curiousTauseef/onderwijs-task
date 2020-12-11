@@ -1,204 +1,161 @@
 
-var r1 = {
-    start: new Date("2001-1-16"),
-    end: new Date("2001-7-20")
-  };
-  
-  var r2 = {
-    start: new Date("2001-7-25"),
-    end: new Date("2001-8-14")
-  };
-  
-  // start date overlaps with end date of previous
-  var r3 = {
-    start: new Date("2001-3-18"),
-    end: new Date("2001-9-20")
-  };
-  
-var ranges = [r1, r3, r2];
-console.log(ranges);
 
-let prices = {
-    banana: new Date("2001-1-16").toISOString().substring(0, 10),
-    orange: 2,
-    meat: 4,
-  };
+//cannot use import as it throws exception, hence use require feature
+const Moment = require('moment');
+const MomentRange = require('moment-range');
+const moment = MomentRange.extendMoment(Moment);
 
-  console.log(prices.banana);
+//blank arrays to hold results of searching operations
+let updateExistingLst = [];
+let deleteExistingList = [];
+let delOverlappingExistingRels =[];
+
+// Existing Relations Array
+let existingRels = [];
+//my test cases
+/*
+existingRels.push( {startDate: new Date("2010-3-17"), endDate : new Date("2010-6-20"), key : 6} );
+existingRels.push( {startDate: new Date("2011-1-18"), endDate : new Date("2011-3-20"), key :7 } );
+existingRels.push( {startDate: new Date("2011-4-18"), endDate : new Date("2011-6-20"), key :8 } );
+existingRels.push( {startDate: new Date("2011-8-18"), endDate : new Date("2011-10-20"), key :9 } );
+
+//lets put one overlapping too
+existingRels.push( {startDate: new Date("2011-11-17"), endDate : new Date("2011-12-20"),key : 10} );
+
+existingRels.push( {startDate: new Date("2021-4-17"), endDate : new Date("2021-5-20"), key:11} );
+*/
+
+//frederik testcase3
+//existingRels.push( {key:1,startDate: new Date("2000-01-01"), endDate : new Date("2021-01-01")} );
+//existingRels.push( {key:1,startDate: "2000-01-01", endDate : "2021-01-01"} );
+
+//frederik testcase4
+//existingRels.push( {key:1,startDate: "2000-01-01", endDate : "2011-01-01"} );
+//existingRels.push( {key:2,startDate: "2013-01-01", endDate : "2021-01-01"} );
 
 
-//helper functions
-//For a pair of date ranges
-function dateRangeOverlaps(a_start, a_end, b_start, b_end) {
-        if (a_start < b_start && b_start < a_end) return true; // b starts in a
-        if (a_start < b_end   && b_end   < a_end) return true; // b ends in a
-        if (b_start <  a_start && a_end   <  b_end) return true; // a in b
-        return false;
-    }
+
+
+//console.log("existingRels");
+//console.log(existingRels);
+
+let desiredRels = [];
+//my test cases
+/*
+desiredRels.push( {startDate: new Date("2010-4-10"), endDate : new Date("2011-1-10")} );
+desiredRels.push( {startDate: new Date("2011-2-10"), endDate : new Date("2011-9-10")} );
+desiredRels.push( {startDate: new Date("2011-12-10"), endDate : new Date("2014-9-10")} );
+//now some very far away non overlapping ranges
+desiredRels.push( {startDate: new Date("2015-01-10"), endDate : new Date("2015-09-10")} );
+desiredRels.push( {startDate: new Date("2016-01-10"), endDate : new Date("2016-09-10")} );
+*/
+
+//frederik test case3
+    //desiredRels.push( {startDate: new Date("2020-01-01"), endDate : new Date("2022-01-01")} );
+//desiredRels.push( {startDate: "2020-01-01", endDate : "2022-01-01"} );
+
+//frederik test case4
+//desiredRels.push( {startDate: "2010-01-01", endDate : "2015-01-01"} );
+
+
+
+//console.log("desiredRels");
+//console.log(desiredRels);
+
+//console.log("desired rels with overlap IDs");
+/* for verification
+console.log(
+    desiredRels.map(el => ({ startDate:el.startDate, endDate:el.endDate, ovrID:0}))
+  );
+  */
+
+let desiredRels_ovrlpIDs =         desiredRels.map(el => ({ startDate:el.startDate, endDate:el.endDate, ovrID:0}))
+//console.log(desiredRels_ovrlpIDs)
+
+
+function generateRelsForAPI(desiredRels,existingRels){
+    //Lets try to take simple examples of date ranges and update counts and store operations in a result array
+    let resultArray = [];
+
+    //check for non overlapping DELETE scenarios and update resultArray
+    //Strategy : Take each el of existing and compare with desired.
+    //If not overlapping mark for delete
+    let overlapStatus = false; //start with no overlap initially
+    //https://codeburst.io/comparison-of-two-arrays-using-javascript-3251d03877fe
     
-    //For an array containing date ranges
-    function multipleDateRangeOverlaps(timeEntries) {
-        let i = 0, j = 0;
-        let timeIntervals = timeEntries.filter(entry => entry.from != null && entry.to != null && entry.from.length === 8 && entry.to.length === 8);
-    
-        if (timeIntervals != null && timeIntervals.length > 1)
-        for (i = 0; i < timeIntervals.length - 1; i += 1) {
-            for (j = i + 1; j < timeIntervals.length; j += 1) {
-                    if (
-                    dateRangeOverlaps(
-                timeIntervals[i].from.getTime(), timeIntervals[i].to.getTime(),
-                timeIntervals[j].from.getTime(), timeIntervals[j].to.getTime()
-                        )
-                    ) return true;
-                }
-            }
-       return false;
-    }
-
-    console.log("check multiple range overlap function")
-    console.log(multipleDateRangeOverlaps(ranges));
-    console.log("checked multiple range overlap function");
-
-    console.log("check pairwise range overlap function")
-    console.log(dateRangeOverlaps(new Date("2020-1-15"),new Date("2020-4-16"),new Date("2020-3-17"),new Date("2020-6-20")));
-    console.log("checked multiple range overlap function");
-
-
-    console.log("check pairwise range overlap function")
-    console.log(dateRangeOverlaps(new Date("2020-1-17"),new Date("2020-4-18"),new Date("2020-4-19"),new Date("2020-6-20")));
-    console.log("checked pairwise range overlap function");
-
-
-
-const date1 = new Date('July 10, 2018 07:22:13')
-const date2 = new Date('July 10, 2018 07:22:13')
-if (date2.getTime() === date1.getTime()) {
-  console.log("dates are equal");
-}
-
-    
-    // Existing Relations Array
-    let existingRels = [];
-
-    //existingRels.push( {startDate: new Date("2020-1-15"), endDate : new Date("2020-4-16")} );
-    console.log("existingRels");
-
-    console.log(existingRels);
-
-    /*
-    let existingRels_uniq = [];
-    //existingRels_uniq = Array.filter(existingRels);
-
-    existingRels_uniq = existingRels.filter(function(elem, index, self) {
-        return index == self.indexOf(elem);
-    })
-    //console.log(existingRels);
-    console.log(existingRels_uniq);
-    */
-
-
-    let desiredRels = [];
-    desiredRels.push( {startDate: new Date("2020-3-17").toISOString().substring(0, 10), endDate : new Date("2020-6-20").toISOString().substring(0, 10)} );
-
-    console.log("desiredRels");
-    console.log(desiredRels);
-
-
-   function generateRelsForAPI(desiredRels,existingRels){
-       //Lets try to take simple examples of date ranges and update counts and store operations in a result array
-        let resultArray = [];
-        let CREATE_count = 0;
-        let DELETE_count = 0;
-        let UPDATE_count = 0;
-
-        console.log(desiredRels.length);
-
-        console.log(existingRels.length);
-
-
-        //check for CREATE scenarios and update resultArray
-        //when a array item in desiredRels has no overlap with any items in existingRels
-        //two cases : 
-        //CASE1:when no items in existingRels and at least one item in desiredRels
-        //CASE2:when non zero items in existingRels and at least one item in desiredRels
-        if ( existingRels.length==0 && desiredRels.length!=0){
-            //All the ranges in desiredREls must be created
-            for (var i = 0; i < desiredRels.length; i++){
-
-                //console.log(desiredRels[0].startDate);
-                //console.log(desiredRels[0].endDate);
-                
-                // check for overlap, here
-                    console.log("case1:CREATE_count");
-                    var idx = i;
-                    //Check/Testing: if we can get date objects and populate them instead. No more need d1 or d2
-                    //let d1 = desiredRels[i].startDate;
-                    //let d2 = desiredRels[i].endDate;
-                    //console.log(d1);
-                    //console.log(d2);
-                    var tmpObj = desiredRels[i];
-                    //var tmpObj = {startDate: desiredRels[i].startDate.toISOString().substring(0, 10),endDate: desiredRels[i].endDate.toISOString().substring(0, 10)};
-                    CREATE_count=CREATE_count+1;
-                    resultArray.push( {operation: "CREATE", body:tmpObj} );
-  
-            }
-        }
-
-
-        for (var i = 0; i < existingRels.length; i++){
-
-            console.log(desiredRels[0].startDate);
-            console.log(desiredRels[0].endDate);
-            console.log(existingRels[0].startDate);
+    existingRels.forEach(e1 =>{ desiredRels.forEach(e2 => 
+        {
             
-            // check for overlap, here
-            if( (dateRangeOverlaps(desiredRels[0].startDate,desiredRels[0].endDate,existingRels[i].startDate,existingRels[i].endDate)) == false) {
-                console.log("case2:CREATE_count");
-                console.log(CREATE_count);
-                var idx = i;
-                var tmpObj = desiredRels[i];
-
-                CREATE_count=CREATE_count+1;
-                resultArray.push( {operation: "CREATE", body:tmpObj} );
-
-            }
-
-
-
+              if(     moment.range(e1.startDate,e1.endDate).overlaps(moment.range(e2.startDate,e2.endDate)) == true) {
+                  console.log("Moment overlap detected");
+                  overlapStatus = true;
+              }
+        });
+        //At this level, we have iterated over all items of desiredRels
+        console.log("<<<<<<<<<<<<<<<<End of inner loop run : Lets check whats overlap status");
+        console.log(overlapStatus);
+  
+        if(overlapStatus == false) { //The element e1 was tested against all items of desiredRels and no overlap was found
+            resultArray.push( {operation: "DELETE", body:e1} );
         }
-
-        console.log("Final:CREATE_count");
-        console.log(CREATE_count);
-        console.log(resultArray);
-        return resultArray;
-
-
-
-
-        //check for DELETE scenarios and update resultArray
-        //when a array item in existingRels has no overlap with any items in desiredRels
-
-
-
-        //check for UPDATE scenarios and update resultArray
-        //first : array item of desiredRels overlaps with exactly one item of existingRels, introduce overlapoccurencefreq
-        //second : array item of desiredRels overlaps with more than one item of existingRels
-
-        
-        
+        //end of running thru e1 curly brace block followed by ) and finally;
+        overlapStatus = false;
+  
     }
+    );
 
-    let retResult = generateRelsForAPI(desiredRels,existingRels);
+    //Now mark for UPDATES and overlapping DELETEs
+    desiredRels_ovrlpIDs.forEach(e1 =>{ existingRels.forEach(e2 => 
+        {    
+              if(     moment.range(e1.startDate,e1.endDate).overlaps(moment.range(e2.startDate,e2.endDate)) == true) {
+                  if(e1.ovrID == 0){//mark for update for el in Desired
+                       resultArray.push( {operation: "UPDATE", body:{key:e2.key, startDate:e1.startDate, endDate:e1.endDate}} );
+                       e1.ovrID = e2.key;
+                       updateExistingLst.push(e2.key);
+                  }
+                  else{
+                    deleteExistingList.push(e2.key)
+                  }
+                }
 
-    console.log("Final returned result object");
-    console.log(retResult);
+        });
+        //At this level, we have iterated over all items of desiredRels
+        //end of running thru e1 curly brace block followed by ) and finally;  
+    }
+    );
 
-    
-    
-      
+    //Now use the updateExistingLst and mark overlapping ExistingRels DELETEs : use filter operation
+    delOverlappingExistingRels = existingRels.filter(el=> deleteExistingList.includes(el.key));
+    delOverlappingExistingRels.forEach(e1=>{resultArray.push({operation:"DELETE", body:{key:e1.key, startDate:e1.startDate, endDate:e1.endDate}})})
+
+    return resultArray;
+}
+let retResult = generateRelsForAPI(desiredRels,existingRels);
+console.log("Final returned result object");
+console.log(retResult);
+
+//console.log("Final list of updated existing rel indexes");
+//console.log(updateExistingLst);
+
+//console.log("Final list of desiredRels_ovrlpIDs");
+//console.log(desiredRels_ovrlpIDs);
 
 
+
+//console.log("Final list of deletion existing rel indexes");
+//console.log(deleteExistingList);
+//console.log("Show array of deletion");
+//console.log(delOverlappingExistingRels);
+
+//export the API so that the chai tests can use it for testing
 module.exports = {
     generateRelsForAPI
 }
+
+
+
+
+
+    
+      
 
