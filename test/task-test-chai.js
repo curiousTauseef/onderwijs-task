@@ -69,3 +69,26 @@ it('UPDATE DELETE case 4 ', () => {
   
 });
 
+it('UPDATE DELETE case 5 ', () => {
+  expect(generateRelsForAPI([{startDate: "2010-01-01", endDate : "2015-01-01"}],[{key:1,startDate: "2000-01-01", endDate : "2011-01-01"},{key:2,startDate: "2013-01-01", endDate : "2021-01-01"}])).to.eql( [
+    {
+      operation: 'UPDATE',
+      body: { key:1,
+        startDate:'2010-01-01',
+        endDate: '2015-01-01'
+            }
+      },
+    {
+    operation: 'DELETE',
+    body: { key:2,
+      startDate:'2013-01-01',
+      endDate: '2021-01-01'
+          }
+    }
+
+  ]);
+
+  
+});
+
+
