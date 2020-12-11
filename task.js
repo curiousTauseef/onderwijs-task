@@ -129,17 +129,27 @@ function generateRelsForAPI(desiredRels,existingRels){
                     deleteExistingList.push(e2.key)
                   }
                 }
-
         });
-        //At this level, we have iterated over all items of desiredRels
+        //At this level, we have iterated over all items of existingRels
         //end of running thru e1 curly brace block followed by ) and finally;  
-        console.log("<<<<<<<<<<<<<<<<End of inner loop run : Lets check whats e1");
+        console.log("<<<<<<<<<<<<<<<<End of inner loop run : Lets check whats e1 of desired. Is there need to CREATE ?");
         console.log(e1);
+                        //At this level, e1 of desired has been checked for overlap with all e2 from existingRels, If overlap occured
+                //then ovrID of e1 MUST have been updated with the correct key. If ovrID is still 0 it means no overlap occured -->case of CREATE for e1
+                if(e1.ovrID == 0){
+                    resultArray.push( {operation: "CREATE", body:{startDate:e1.startDate, endDate:e1.endDate}} );
+
+
+
+                }
+
+
 
     }
     );
 
     //Now use the updateExistingLst and mark overlapping ExistingRels DELETEs : use filter operation
+    //These are DELETES from items of Existing which overlapped with an item of desired but that item of desired had already overlapped to mark UPDATE another item of existing
     delOverlappingExistingRels = existingRels.filter(el=> deleteExistingList.includes(el.key));
     delOverlappingExistingRels.forEach(e1=>{resultArray.push({operation:"DELETE", body:{key:e1.key, startDate:e1.startDate, endDate:e1.endDate}})})
 

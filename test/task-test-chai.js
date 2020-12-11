@@ -23,6 +23,18 @@ it('CREATE case 1 ', () => {
 */
 
 
+it('CREATE case 1 ', () => {
+  expect(generateRelsForAPI([{startDate: "2020-03-17", endDate : "2020-06-20"}],[])).to.eql( [{
+    operation: 'CREATE',
+    body: {
+      startDate:'2020-03-17',
+      endDate: '2020-06-20'
+    }
+  }]);
+
+  
+});
+
 it('DELETE case 2 ', () => {
   expect(generateRelsForAPI([],[{key:1,startDate:"2020-01-01", endDate : "2021-01-01"}])).to.eql( [{
     operation: 'DELETE',
