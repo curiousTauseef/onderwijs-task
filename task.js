@@ -69,13 +69,14 @@ console.log(
   );
   */
 
-let desiredRels_ovrlpIDs =         desiredRels.map(el => ({ startDate:el.startDate, endDate:el.endDate, ovrID:0}))
-console.log(desiredRels_ovrlpIDs)
 
 
 function generateRelsForAPI(desiredRels,existingRels){
     //Lets try to take simple examples of date ranges and update counts and store operations in a result array
     let resultArray = [];
+    let desiredRels_ovrlpIDs = desiredRels.map(el => ({ startDate:el.startDate, endDate:el.endDate, ovrID:0}))
+    console.log(desiredRels_ovrlpIDs)
+
 
     //check for non overlapping DELETE scenarios and update resultArray
     //Strategy : Take each el of existing and compare with desired.
