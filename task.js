@@ -130,21 +130,15 @@ function generateRelsForAPI(desiredRels,existingRels){
                   }
                 }
         });
-        //At this level, we have iterated over all items of existingRels
+        //At this level, we have iterated over all items of existingRels (IMPORTANT to understand the exact point where inner loop completes)
         //end of running thru e1 curly brace block followed by ) and finally;  
         console.log("<<<<<<<<<<<<<<<<End of inner loop run : Lets check whats e1 of desired. Is there need to CREATE ?");
         console.log(e1);
-                        //At this level, e1 of desired has been checked for overlap with all e2 from existingRels, If overlap occured
-                //then ovrID of e1 MUST have been updated with the correct key. If ovrID is still 0 it means no overlap occured -->case of CREATE for e1
-                if(e1.ovrID == 0){
-                    resultArray.push( {operation: "CREATE", body:{startDate:e1.startDate, endDate:e1.endDate}} );
-
-
-
-                }
-
-
-
+        //At this level, e1 of desired has been checked for overlap with all e2 from existingRels, If overlap occured
+        //then ovrID of e1 MUST have been updated with the correct key. If ovrID is still 0 it means no overlap occured -->case of CREATE for e1
+        if(e1.ovrID == 0){
+            resultArray.push( {operation: "CREATE", body:{startDate:e1.startDate, endDate:e1.endDate}} );
+        }
     }
     );
 
