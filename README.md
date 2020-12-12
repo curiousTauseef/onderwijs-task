@@ -17,3 +17,9 @@ daily updates
 	    Test the cases given in Assignment doc
 	12-Dec
 	    Make a big combined test case having create, update and delete
+
+Commands Used :
+* To run the test case suite : npm test
+* Run as experimental module : node --experimental-modules task-test.js
+* Adding new JS packages : npm install --save moment-range, npm install --save-dev chai-datetime
+* Updating the environment after changing packages (After deletion of node_modules directory): npm i -g npm-check-updates, ncu -u, npm install
