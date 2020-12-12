@@ -9,3 +9,11 @@ daily updates
 		Start with test case 
 	2- Dec 
 		Use Mocha and Chai for comparing Date for CREATE case
+	9- Dec
+	    Start using operations:filter, map from array
+	10-Dec
+	    Arrange two double looping to do these in order : deletion for non overlapping existing els, update of single time overlapping , deletion of multiple time overlapping and finally create ranges
+	11-Dec
+	    Test the cases given in Assignment doc
+	12-Dec
+	    Make a big combined test case having create, update and delete
