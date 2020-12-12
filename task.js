@@ -35,11 +35,11 @@ function generateRelsForAPI(desiredRels,existingRels){
                 }
         });
         //At this level, we have iterated over all items of desiredRels
-        console.log("<<<<<<<<<<<<<<<<End of inner loop run : Lets check whats overlap status");
+        console.log("<<<<<<<<<<<<<<<<End of inner loop run : An element of existing is checked against all els of desired : Lets check whats overlap status");
         console.log(overlapStatus);
   
         if(overlapStatus == false) { //The element e1 was tested against all items of desiredRels and no overlap was found
-            console.log("Case of non overlapping deletion for an item of existing...");
+            console.log("Case of non overlapping deletion for an item of existing...Update result with this DELETE");
             resultArray.push( {operation: "DELETE", body:e1} );
         }
         //end of running thru e1 curly brace block followed by ) and finally;
@@ -64,6 +64,7 @@ function generateRelsForAPI(desiredRels,existingRels){
                        updateExistingLst.push(e2.key);
                   }
                   else{
+                    console.log("Second looping:Detect secndt time overlap of des e1 where ovrID has been updated already. Hence case of overlapping DELETE...")
                     deleteExistingList.push(e2.key)
                   }
                 }
@@ -75,6 +76,7 @@ function generateRelsForAPI(desiredRels,existingRels){
         //At this level, e1 of desired has been checked for overlap with all e2 from existingRels, If overlap occured
         //then ovrID of e1 MUST have been updated with the correct key. If ovrID is still 0 it means no overlap occured -->case of CREATE for e1
         if(e1.ovrID == 0){
+            console.log("No overlap seen for this item of desired. Mark for CREATE...")
             resultArray.push( {operation: "CREATE", body:{startDate:e1.startDate, endDate:e1.endDate}} );
         }
     }
