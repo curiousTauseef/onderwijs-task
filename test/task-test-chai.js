@@ -3,8 +3,6 @@ const { generateRelsForAPI } = require('../task')
 
 var expect = require('chai').expect;
 var assert = require('chai').assert;
-
-
 var chai = require('chai');
 chai.use(require('chai-datetime'));
 
@@ -22,7 +20,6 @@ it('CREATE case 1 ', () => {
 });
 */
 
-
 it('CREATE case 1 ', () => {
   expect(generateRelsForAPI([{startDate: "2020-03-17", endDate : "2020-06-20"}],[])).to.eql( [{
     operation: 'CREATE',
@@ -31,7 +28,6 @@ it('CREATE case 1 ', () => {
       endDate: '2020-06-20'
     }
   }]);
-
   
 });
 
@@ -43,7 +39,6 @@ it('DELETE case 2 ', () => {
       endDate: '2021-01-01'
     }
   }]);
-
   
 });
 
@@ -56,10 +51,10 @@ it('UPDATE case 3 ', () => {
       endDate: '2022-01-01'
     }
   }]);
-
   
 });
 
+//This currently fails because ordering of DELETE and UPDATE is not done 
 it('UPDATE DELETE case 4 ', () => {
   expect(generateRelsForAPI([{startDate: "2010-01-01", endDate : "2015-01-01"}],[{key:1,startDate: "2000-01-01", endDate : "2011-01-01"},{key:2,startDate: "2013-01-01", endDate : "2021-01-01"}])).to.eql( [
     {
@@ -77,7 +72,6 @@ it('UPDATE DELETE case 4 ', () => {
             }
       }
   ]);
-
   
 });
 
@@ -97,10 +91,71 @@ it('UPDATE DELETE case 5 ', () => {
       endDate: '2021-01-01'
           }
     }
-
   ]);
-
   
 });
+
+//new test cases from Tauseef
+it('Combined CREATE UPDATE DELETE case 6 ', () => {
+  expect(generateRelsForAPI(
+    [{startDate: "2010-04-10", endDate : "2011-01-10"},
+     {startDate: "2011-02-10", endDate : "2011-09-10"},
+     {startDate: "2011-12-10", endDate : "2014-09-10"},
+     {startDate: "2015-01-10", endDate : "2015-09-10"},
+     {startDate: "2016-01-10", endDate : "2016-09-10"}
+     ],
+     [{key:1,startDate: "2010-03-17", endDate : "2011-06-20"},
+       //next three(2,3,4) keys let them overlap with one period of desired so that overlapping deletions occur
+        {key:2,startDate: "2011-01-18", endDate : "2011-03-20"},
+        {key:3,startDate: "2011-04-18", endDate : "2011-06-20"},
+        {key:4,startDate: "2011-08-18", endDate : "2011-10-20"},
+        //now back to standard overlapping
+        {key:5,startDate: "2011-11-17", endDate : "2011-12-20"},
+        //one range very far so that non overlapping deletion is tested
+        {key:6,startDate: "2021-04-17", endDate : "2021-01-01"}
+      ])).to.eql(
+      [
+          {
+            operation: 'DELETE',
+            body: { key: 6, startDate: '2021-04-17', endDate: '2021-01-01' }
+          },
+          {
+            operation: 'UPDATE',
+            body: { key: 1, startDate: '2010-04-10', endDate: '2011-01-10' }
+          },
+          {
+            operation: 'UPDATE',
+            body: { key: 1, startDate: '2011-02-10', endDate: '2011-09-10' }
+          },
+          {
+            operation: 'UPDATE',
+            body: { key: 5, startDate: '2011-12-10', endDate: '2014-09-10' }
+          },
+          {
+            operation: 'CREATE',
+            body: { startDate: '2015-01-10', endDate: '2015-09-10' }
+          },
+          {
+            operation: 'CREATE',
+            body: { startDate: '2016-01-10', endDate: '2016-09-10' }
+          },
+          {
+            operation: 'DELETE',
+            body: { key: 2, startDate: '2011-01-18', endDate: '2011-03-20' }
+          },
+          {
+            operation: 'DELETE',
+            body: { key: 3, startDate: '2011-04-18', endDate: '2011-06-20' }
+          },
+          {
+            operation: 'DELETE',
+            body: { key: 4, startDate: '2011-08-18', endDate: '2011-10-20' }
+          }
+      ]
+         
+  );
+  
+});
+
 
 
