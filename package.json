@@ -15,6 +15,7 @@
     "moment-range": "^4.0.2"
   },
   "devDependencies": {
+    "chai-datetime": "^1.7.0",
     "mocha": "^8.2.1"
   }
 }
