@@ -10,66 +10,9 @@ let updateExistingLst = [];
 let deleteExistingList = [];
 let delOverlappingExistingRels =[];
 
-// Existing Relations Array
-let existingRels = [];
-//my test cases
-/*
-existingRels.push( {startDate: new Date("2010-3-17"), endDate : new Date("2010-6-20"), key : 6} );
-existingRels.push( {startDate: new Date("2011-1-18"), endDate : new Date("2011-3-20"), key :7 } );
-existingRels.push( {startDate: new Date("2011-4-18"), endDate : new Date("2011-6-20"), key :8 } );
-existingRels.push( {startDate: new Date("2011-8-18"), endDate : new Date("2011-10-20"), key :9 } );
-
-//lets put one overlapping too
-existingRels.push( {startDate: new Date("2011-11-17"), endDate : new Date("2011-12-20"),key : 10} );
-
-existingRels.push( {startDate: new Date("2021-4-17"), endDate : new Date("2021-5-20"), key:11} );
-*/
-
-//frederik testcase3
-//existingRels.push( {key:1,startDate: new Date("2000-01-01"), endDate : new Date("2021-01-01")} );
-//existingRels.push( {key:1,startDate: "2000-01-01", endDate : "2021-01-01"} );
-
-//frederik testcase4
-//existingRels.push( {key:1,startDate: "2000-01-01", endDate : "2011-01-01"} );
-//existingRels.push( {key:2,startDate: "2013-01-01", endDate : "2021-01-01"} );
-
-
-
-
-//console.log("existingRels");
-//console.log(existingRels);
-
-let desiredRels = [];
-//my test cases
-/*
-desiredRels.push( {startDate: new Date("2010-4-10"), endDate : new Date("2011-1-10")} );
-desiredRels.push( {startDate: new Date("2011-2-10"), endDate : new Date("2011-9-10")} );
-desiredRels.push( {startDate: new Date("2011-12-10"), endDate : new Date("2014-9-10")} );
-//now some very far away non overlapping ranges
-desiredRels.push( {startDate: new Date("2015-01-10"), endDate : new Date("2015-09-10")} );
-desiredRels.push( {startDate: new Date("2016-01-10"), endDate : new Date("2016-09-10")} );
-*/
-
-//frederik test case3
-    //desiredRels.push( {startDate: new Date("2020-01-01"), endDate : new Date("2022-01-01")} );
-//desiredRels.push( {startDate: "2020-01-01", endDate : "2022-01-01"} );
-
-//frederik test case4
-//desiredRels.push( {startDate: "2010-01-01", endDate : "2015-01-01"} );
-
-
-
-//console.log("desiredRels");
-//console.log(desiredRels);
-
-//console.log("desired rels with overlap IDs");
-/* for verification
-console.log(
-    desiredRels.map(el => ({ startDate:el.startDate, endDate:el.endDate, ovrID:0}))
-  );
-  */
-
-
+// Existing and Desired Relations Array
+const existingRels = [];
+const desiredRels = [];
 
 function generateRelsForAPI(desiredRels,existingRels){
     console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>generateRelsForAPI<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
@@ -78,8 +21,7 @@ function generateRelsForAPI(desiredRels,existingRels){
     let desiredRels_ovrlpIDs = desiredRels.map(el => ({ startDate:el.startDate, endDate:el.endDate, ovrID:0}))
     console.log(desiredRels_ovrlpIDs)
 
-
-    //check for non overlapping DELETE scenarios and update resultArray
+    //First we check for non overlapping DELETE scenarios and update resultArray
     //Strategy : Take each el of existing and compare with desired.
     //If not overlapping mark for delete
     let overlapStatus = false; //start with no overlap initially
@@ -87,11 +29,10 @@ function generateRelsForAPI(desiredRels,existingRels){
     
     existingRels.forEach(e1 =>{ desiredRels.forEach(e2 => 
         {
-            
-              if(     moment.range(e1.startDate,e1.endDate).overlaps(moment.range(e2.startDate,e2.endDate)) == true) {
+               if( moment.range(e1.startDate,e1.endDate).overlaps(moment.range(e2.startDate,e2.endDate)) == true) {
                   console.log("First looping : Moment overlap detected");
                   overlapStatus = true;
-              }
+                }
         });
         //At this level, we have iterated over all items of desiredRels
         console.log("<<<<<<<<<<<<<<<<End of inner loop run : Lets check whats overlap status");
@@ -99,14 +40,11 @@ function generateRelsForAPI(desiredRels,existingRels){
   
         if(overlapStatus == false) { //The element e1 was tested against all items of desiredRels and no overlap was found
             console.log("Case of non overlapping deletion for an item of existing...");
-
             resultArray.push( {operation: "DELETE", body:e1} );
         }
         //end of running thru e1 curly brace block followed by ) and finally;
         overlapStatus = false;
-  
-    }
-    );
+    });
 
     //Now mark for UPDATES and overlapping DELETEs
     desiredRels_ovrlpIDs.forEach(e1 =>{ existingRels.forEach(e2 => 
@@ -155,28 +93,7 @@ let retResult = generateRelsForAPI(desiredRels,existingRels);
 console.log("Final returned result object");
 console.log(retResult);
 
-//console.log("Final list of updated existing rel indexes");
-//console.log(updateExistingLst);
-
-//console.log("Final list of desiredRels_ovrlpIDs");
-//console.log(desiredRels_ovrlpIDs);
-
-
-
-//console.log("Final list of deletion existing rel indexes");
-//console.log(deleteExistingList);
-//console.log("Show array of deletion");
-//console.log(delOverlappingExistingRels);
-
 //export the API so that the chai tests can use it for testing
 module.exports = {
     generateRelsForAPI
 }
-
-
-
-
-
-    
-      
-
