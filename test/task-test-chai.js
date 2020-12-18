@@ -206,4 +206,79 @@ it('DUPLICATEs with CREATE and DELETE case 8 ', () => {
   
 });
 
+it('Single object of Desired overlapping with multiple objects of existing case 9 ', () => {
+  expect(generateRelsForAPI([
+    //Lets take a big range 
+    {startDate: "2010-01-01", endDate : "2020-12-20"},
+  
+    ],
+    [
+      //Lets take first two items to be same 
+      {key:1,startDate: "2010-03-17", endDate : "2010-06-20"},
+      {key:2,startDate: "2015-03-17", endDate : "2015-06-20"},
+      //Now take on different-must be deleted
+      {key:3,startDate: "2019-03-17", endDate : "2019-06-20"},
+
+    ])).to.eql( [
+      {
+        operation: 'DELETE',
+        body: { key: 2, startDate: '2015-03-17', endDate: '2015-06-20' }
+      },
+      {
+        operation: 'DELETE',
+        body: { key: 3, startDate: '2019-03-17', endDate: '2019-06-20' }
+      },
+      {
+        operation: 'UPDATE',
+        body: { key: 1, startDate: '2010-01-01', endDate: '2020-12-20' }
+      }
+
+    ]);
+  
+});
+
+it('Two objects of Desired overlapping with multiple objects of existing case 10 ', () => {
+  expect(generateRelsForAPI([
+    //Lets take a big range 
+    {startDate: "2010-01-01", endDate : "2019-12-20"},
+    {startDate: "2020-01-01", endDate : "2020-12-20"},
+
+  
+    ],
+    [
+      //Lets take first two items to be withing o1 of desired
+      {key:1,startDate: "2010-03-17", endDate : "2010-06-20"},
+      {key:2,startDate: "2015-03-17", endDate : "2015-06-20"},
+      {key:3,startDate: "2018-03-17", endDate : "2020-06-20"},
+
+      //Now take on object that is within o2 od desired-must be deleted
+      {key:4,startDate: "2019-03-17", endDate : "2020-06-20"},
+
+    ])).to.eql( [
+      {
+        operation: 'DELETE',
+        body: { key: 2, startDate: '2015-03-17', endDate: '2015-06-20' }
+      },
+      {
+        operation: 'DELETE',
+        body: { key: 3, startDate: '2018-03-17', endDate: '2020-06-20' }
+      },
+      {
+        operation: 'DELETE',
+        body: { key: 4, startDate: '2019-03-17', endDate: '2020-06-20' }
+      },
+      {
+        operation: 'UPDATE',
+        body: { key: 1, startDate: '2010-01-01', endDate: '2019-12-20' }
+      },
+      {
+        operation: 'UPDATE',
+        body: { key: 3, startDate: '2020-01-01', endDate: '2020-12-20' }
+      }
+      
+    ]);
+  
+});
+
+
 

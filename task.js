@@ -49,6 +49,31 @@ function generateRelsForAPI(desiredRels,existingRels){
     const desiredRels_ovrlpIDs_uniq = desiredRels_ovrlpIDs.filter(arraycomparer(existingRels));
     const existingRels_uniq = existingRels.filter(arraycomparer(desiredRels_ovrlpIDs));
 
+    /*
+    var props = ['startDate', 'endDate'];
+    var result = desiredRels.filter(function(o1){
+        // filter out (!) items in result2
+        return existingRels.some(function(o2){
+            //return o1.id === o2.id;          // assumes unique id
+            return moment.range(o1.startDate,o1.endDate).overlaps(moment.range(o2.startDate,o2.endDate)) ;          // assumes unique id
+
+        });
+    }).map(function(o){
+        // use reduce to make objects with only the required properties
+        // and map to apply this to the filtered array as a whole
+        return props.reduce(function(newo, startDate,endDate){
+            newo[startDate] = o[startDate];
+            newo[endDate] = o[endDate];
+
+            return newo;
+        }, {});
+    });
+
+    console.log("Elegant reduce method");
+    console.log(result);
+    */
+
+
 
 
     //First we check for non overlapping DELETE scenarios and update resultArray
@@ -115,7 +140,7 @@ function generateRelsForAPI(desiredRels,existingRels){
     console.log("Both loops have ended. Lets check our result now...");
     console.log(resultArray);
 
-    console.log("Both loops have ended. Lets check if any overlapping deletes are recorded...");
+    console.log("Both loops have ended. Lets check if keys for any overlapping deletes are recorded...");
     console.log(deleteExistingList);
 
 
